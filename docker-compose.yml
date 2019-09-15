@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  eventdrivensamples.api:
+    image: ${DOCKER_REGISTRY-}eventdrivensamplesapi
+    build:
+      context: .
+      dockerfile: src/EventDrivenSamples.Api/Dockerfile
