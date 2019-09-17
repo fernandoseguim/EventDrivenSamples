@@ -2,7 +2,7 @@
 
 namespace CustomersService.Domain.ValueObjects
 {
-    public struct Document
+    public struct Document : IEquatable<Document>
     {
         public Document(string number, DocumentType type)
         {
@@ -14,5 +14,17 @@ namespace CustomersService.Domain.ValueObjects
         public DocumentType Type { get; }
 
         public override string ToString() => Number;
+
+        public bool Equals(Document other) => string.Equals(Number, other.Number) && Type == other.Type;
+
+        public override bool Equals(object obj) => obj is Document other && Equals(other);
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Number != null ? Number.GetHashCode() : 0) * 397) ^ (int) Type;
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ namespace CustomersService.Domain.Commands.Requests
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string DocumentNumber { get; set; }
+        public string Email { get; set; }
 
         public DocumentType DocumentType { get; set; }
         public Address Address { get; set; }

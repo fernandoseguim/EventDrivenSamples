@@ -2,17 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
     <UserSecretsId>52177dac-51f5-4c53-813f-9bc09a3d5e11</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..</DockerfileContext>
     <LangVersion>8.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.AsyncInitialization" Version="1.1.2" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.100.1" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.101.65" />
+    <PackageReference Include="Barney.WaitForIt" Version="1.0.0-beta.1" />
+    <PackageReference Include="EasyNetQ" Version="3.6.0" />
+    <PackageReference Include="EasyNetQ.DI.Microsoft" Version="3.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.0.0-preview8.19405.7" />
+    <PackageReference Include="RabbitMQ.Client" Version="5.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.0.0-rc8" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc2" />
@@ -21,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Extensions\" />
+    <ProjectReference Include="..\..\contracts\EventDrivenSamples.Contracts\EventDrivenSamples.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

@@ -22,7 +22,7 @@ namespace CustomersService.Controllers
         {
             var result = await _createCustomerCommandHandler.Handle(command);
 
-            return StatusCode((int)result.StatusCode, result.Data);
+            return result.Success ? Created($"http://localhost:5000/api/v1/customers/{command.DocumentNumber}", result.Data) : StatusCode((int)result.StatusCode, result.Data);
         }
     }
 }
