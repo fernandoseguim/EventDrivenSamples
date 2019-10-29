@@ -1,23 +1,26 @@
-﻿using CustomersService.Domain.Commands.Requests;
-using CustomersService.Domain.Contracts.Handlers;
-using CustomersService.Domain.ValueObjects;
-using System;
-using System.Threading.Tasks;
+﻿using Amaury.MediatR.Bus;
+using CustomersService.Domain.Commands.Requests;
 using CustomersService.Domain.Commands.Responses;
+using CustomersService.Domain.Contracts.Handlers;
 using CustomersService.Domain.Contracts.Repositories;
 using CustomersService.Domain.Entities;
+using CustomersService.Domain.ValueObjects;
 using CustomersService.Infra.ExternalServices.Email;
+using System;
+using System.Threading.Tasks;
 
-namespace CustomersService.Application.Handlers
+namespace CustomersService.Application.Handlers.Commands
 {
     public class CreateCustomerCommandHandler : ICreateCustomerCommandHandler
     {
         private readonly ICustomersRepository _customersRepository;
         private readonly IValidateEmailService _validateEmailService;
+        private readonly INotifiableCelebrityEventsBus _bus;
 
-        public CreateCustomerCommandHandler(ICustomersRepository customersRepository, IValidateEmailService validateEmailService)
+        public CreateCustomerCommandHandler(ICustomersRepository customersRepository, IValidateEmailService validateEmailService, INotifiableCelebrityEventsBus bus)
         {
             _validateEmailService = validateEmailService ?? throw new ArgumentNullException(nameof(validateEmailService));
+            _bus = bus ?? throw new ArgumentNullException(nameof(bus));
             _customersRepository = customersRepository ?? throw new ArgumentNullException(nameof(customersRepository));
         }
 
@@ -28,10 +31,10 @@ namespace CustomersService.Application.Handlers
             var email = new Email(command.Email);
             var customer = new Customer().Create(document, name, command.Address);
 
-            await _customersRepository.Add(customer);
-
             var request = new ValidateEmailRequest($"{name}", $"{document}", $"{email}");
             await _validateEmailService.Send(request);
+
+            await _bus.RaiseEvents(customer.PendingEvents);
 
             return new SuccessfulCommandResult("customer was created", command);
         }

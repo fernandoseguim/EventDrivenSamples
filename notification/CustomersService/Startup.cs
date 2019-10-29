@@ -21,6 +21,11 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System;
+using Amaury.MediatR;
+using Amaury.Store.DynamoDb.Configurations;
+using CustomersService.Application.Handlers.Commands;
+using CustomersService.Application.Handlers.Events.Publishers;
+using Microsoft.Extensions.Hosting.Internal;
 
 namespace CustomersService
 {
@@ -48,7 +53,7 @@ namespace CustomersService
 
             services.AddAWSService<IAmazonDynamoDB>(new AWSOptions
             {
-                Credentials = new BasicAWSCredentials("AKIAVSTVILGI3XFQ3WPB", "mwFZ0JSr9Sh48TCAQHuFw8Q/ToWIv5vu/9CJ1Ohv"),
+                Credentials = new BasicAWSCredentials("AKIAVSTVILGI4CIHQF55", "Ae0hCcKeCkXNncho2DQ9H0ZCgBwgo7X7FkwaDZDo"),
                 Region = RegionEndpoint.USWest2
             });
 
@@ -69,6 +74,16 @@ namespace CustomersService
             services.AddTransient<IEmailTokenWasValidatedHandler, EmailTokenWasValidatedHandler>();
             services.AddTransient<IEmailTokenWasExpiredHandler, EmailTokenWasExpiredHandler>();
             services.AddHostedService<Worker>();
+
+            services.AddEventStore(configure =>
+            {
+                configure.StoreName = "Customer.Events";
+
+                configure.Region = RegionEndpoint.USWest2;
+                configure.Credentials = new BasicAWSCredentials("AKIAVSTVILGI4CIHQF55", "Ae0hCcKeCkXNncho2DQ9H0ZCgBwgo7X7FkwaDZDo");
+            });
+
+            services.AddCelebrityEventsBus(typeof(CustomerWasCreatedPublisher));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

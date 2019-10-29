@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
+﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using CustomersService.Domain.Contracts.Repositories;
 using CustomersService.Domain.Entities;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace CustomersService.Infra.Repositories.CustomerContext
 {
@@ -10,9 +12,11 @@ namespace CustomersService.Infra.Repositories.CustomerContext
     {
         private readonly DynamoDBContext _context;
         private readonly DynamoDBOperationConfig _configuration;
+        private readonly ILogger<CustomersRepository> _logger;
 
-        public CustomersRepository(IAmazonDynamoDB dynamoDb)
+        public CustomersRepository(IAmazonDynamoDB dynamoDb, ILogger<CustomersRepository> logger)
         {
+            _logger = logger;
             _context = new DynamoDBContext(dynamoDb);
             _configuration = new DynamoDBOperationConfig()
             {
@@ -21,26 +25,32 @@ namespace CustomersService.Infra.Repositories.CustomerContext
             };
         }
 
-        public async Task Add(Customer customer)
+        public async Task Add(CustomerData customer)
         {
-            var data = new CustomerData
+            try
             {
-                DocumentNumber = $"{customer.Document}",
-                Name = $"{customer.Name}",
-                BillingAddresses = customer.BillingAddress.ToJson()
-            };
-
-            foreach (var email in customer.Emails)
-            {
-                data.Emails.Add(email.ToJson());
+                await _context.SaveAsync(customer, _configuration);
             }
-
-            foreach (var address in customer.ShippingAddresses)
+            catch(Exception exception)
             {
-                data.ShippingAddresses.Add(address.ToJson());
+                _logger.LogCritical(exception, "Erro ao salvar registro");
+                throw;
             }
+        }
 
-            await _context.SaveAsync(data, _configuration);
+        public async Task<CustomerData> Get(string document)
+        {
+            try
+            {
+                var data = await _context.LoadAsync<CustomerData>(document);
+
+                return data;
+            }
+            catch(Exception exception)
+            {
+                _logger.LogCritical(exception, "Erro ao obter registro");
+                throw;
+            }
         }
     }
 }

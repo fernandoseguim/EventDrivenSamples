@@ -1,9 +1,13 @@
 ﻿using EventDrivenSamples.Contracts;
 using System;
+using Amaury.Abstractions;
+using Amaury.MediatR;
+using EventDrivenSamples.Contracts.Events.StateTransfer;
+using MediatR;
 
 namespace CustomersService.Domain.Events
 {
-    public class CustomerWasCreated : IDomainEvent
+    public class CustomerWasCreated : ICustomerWasCreated, INotifiableCelebrityEvent
     {
         public CustomerWasCreated(string aggregatedId, object data)
         {

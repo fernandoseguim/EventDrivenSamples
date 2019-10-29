@@ -27,8 +27,4 @@
     <ProjectReference Include="..\..\contracts\EventDrivenSamples.Contracts\EventDrivenSamples.Contracts.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Domain\Events\" />
-  </ItemGroup>
-
 </Project>

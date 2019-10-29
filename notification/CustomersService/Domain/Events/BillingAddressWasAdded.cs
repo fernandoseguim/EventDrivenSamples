@@ -1,9 +1,11 @@
 ﻿using EventDrivenSamples.Contracts;
 using System;
+using Amaury.Abstractions;
+using Amaury.MediatR;
 
 namespace CustomersService.Domain.Events
 {
-    public class BillingAddressWasAdded : IDomainEvent
+    public class BillingAddressWasAdded : INotifiableCelebrityEvent
     {
         public BillingAddressWasAdded(string aggregatedId, object data)
         {

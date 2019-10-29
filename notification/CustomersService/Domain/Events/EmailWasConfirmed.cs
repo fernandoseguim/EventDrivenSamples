@@ -1,9 +1,10 @@
-﻿using System;
-using EventDrivenSamples.Contracts;
+﻿using Amaury.Abstractions;
+using System;
+using Amaury.MediatR;
 
 namespace CustomersService.Domain.Events
 {
-    public class EmailWasConfirmed : IDomainEvent
+    public class EmailWasConfirmed : INotifiableCelebrityEvent
     {
         public EmailWasConfirmed(string aggregatedId, dynamic data)
         {
